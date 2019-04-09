@@ -3,16 +3,22 @@
   "groups": [
     {
       "sourceType": "com.zcq.security.core.properties.SecurityProperties",
-      "name": "zcq.security",
+      "name": "earthchen.security",
       "type": "com.zcq.security.core.properties.SecurityProperties"
     }
   ],
   "properties": [
     {
       "sourceType": "com.zcq.security.core.properties.SecurityProperties",
-      "name": "zcq.security.browser",
+      "name": "earthchen.security.browser",
       "description": "浏览器端配置",
       "type": "com.zcq.security.core.properties.BrowserProperties"
+    },
+    {
+      "sourceType": "com.zcq.security.core.properties.SecurityProperties",
+      "name": "earthchen.security.validate-code",
+      "description": "验证码配置",
+      "type": "com.zcq.security.core.properties.ValidateCodeProperties"
     }
   ]
 }

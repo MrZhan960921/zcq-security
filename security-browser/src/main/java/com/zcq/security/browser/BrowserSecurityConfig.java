@@ -3,6 +3,7 @@ package com.zcq.security.browser;
 import com.zcq.security.browser.authentication.ImoocAuthenctiationFailureHandler;
 import com.zcq.security.browser.authentication.ImoocAuthenticationSuccessHandler;
 import com.zcq.security.core.properties.SecurityProperties;
+import com.zcq.security.core.validate.code.ValidateCodeFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -10,6 +11,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 /**
  * @Author: zcq
@@ -44,18 +46,30 @@ public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-                        http.formLogin()
-                                .loginPage("/authentication/require")
-                                .loginProcessingUrl("/authentication/form")
-                                .successHandler(imoocAuthenticationSuccessHandler)
-                                .failureHandler(imoocAuthenctiationFailureHandler)
-                                .and()
-                                .authorizeRequests()
-                                .antMatchers("/authentication/require",securityProperties.getBrowser().getLoginPage()).permitAll() //对于这个页面请求不需要身份认证，对于登录页面不需要身份验证。
-                                .anyRequest()
-                                .authenticated()
-                                .and()
-                                .csrf().disable();
+        ValidateCodeFilter validateCodeFilter = new ValidateCodeFilter();
+        validateCodeFilter.setAuthenticationFailureHandler(imoocAuthenctiationFailureHandler);
+
+        // 把配置传入验证码过滤器
+        validateCodeFilter.setSecurityProperties(securityProperties);
+        validateCodeFilter.afterPropertiesSet();
+
+        http.
+                addFilterBefore(validateCodeFilter, UsernamePasswordAuthenticationFilter.class)
+                // 指定表单登录
+                .formLogin()
+                .loginPage("/authentication/require")
+                .loginProcessingUrl("/authentication/form")
+                .successHandler(imoocAuthenticationSuccessHandler)
+                .failureHandler(imoocAuthenctiationFailureHandler)
+                .and()
+                .authorizeRequests()
+                .antMatchers("/authentication/require",
+                        securityProperties.getBrowser().getLoginPage(),
+                        "/code/image").permitAll()
+                .anyRequest()
+                .authenticated()
+                .and()
+                .csrf().disable();
 
     }
 }
