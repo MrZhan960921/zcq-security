@@ -1,5 +1,9 @@
 package com.zcq.security.browser;
 
+import com.zcq.security.browser.authentication.ImoocAuthenctiationFailureHandler;
+import com.zcq.security.browser.authentication.ImoocAuthenticationSuccessHandler;
+import com.zcq.security.core.properties.SecurityProperties;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -13,6 +17,21 @@ import org.springframework.security.crypto.password.PasswordEncoder;
  */
 @Configuration
 public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter {
+    @Autowired
+    private SecurityProperties securityProperties;
+
+    /**
+     * 验证错误处理器
+     */
+    @Autowired
+    private ImoocAuthenctiationFailureHandler imoocAuthenctiationFailureHandler;
+
+    /**
+     * 验证成功处理器
+     */
+    @Autowired
+    private ImoocAuthenticationSuccessHandler imoocAuthenticationSuccessHandler;
+
     /**
      * 设置加密解密算法
      *
@@ -25,14 +44,18 @@ public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.formLogin()
-            .and()
-            // 对请求授权配置：注意方法名的含义，能联想到一些
-            .authorizeRequests()
-            .anyRequest()
-            // 对任意请求都必须是已认证才能访问
-            .authenticated();
-
+                        http.formLogin()
+                                .loginPage("/authentication/require")
+                                .loginProcessingUrl("/authentication/form")
+                                .successHandler(imoocAuthenticationSuccessHandler)
+                                .failureHandler(imoocAuthenctiationFailureHandler)
+                                .and()
+                                .authorizeRequests()
+                                .antMatchers("/authentication/require",securityProperties.getBrowser().getLoginPage()).permitAll() //对于这个页面请求不需要身份认证，对于登录页面不需要身份验证。
+                                .anyRequest()
+                                .authenticated()
+                                .and()
+                                .csrf().disable();
 
     }
 }

@@ -1,0 +1,18 @@
+{
+  "hints": [],
+  "groups": [
+    {
+      "sourceType": "com.zcq.security.core.properties.SecurityProperties",
+      "name": "zcq.security",
+      "type": "com.zcq.security.core.properties.SecurityProperties"
+    }
+  ],
+  "properties": [
+    {
+      "sourceType": "com.zcq.security.core.properties.SecurityProperties",
+      "name": "zcq.security.browser",
+      "description": "浏览器端配置",
+      "type": "com.zcq.security.core.properties.BrowserProperties"
+    }
+  ]
+}
