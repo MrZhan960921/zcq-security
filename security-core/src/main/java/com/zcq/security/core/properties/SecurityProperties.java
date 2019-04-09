@@ -17,6 +17,11 @@ public class SecurityProperties {
      */
     private ValidateCodeProperties validateCode = new ValidateCodeProperties();
 
+    /**
+     * 社交登录相关配置
+     */
+    private SocialProperties social = new SocialProperties();
+
     public ValidateCodeProperties getValidateCode() {
         return validateCode;
     }
@@ -31,5 +36,13 @@ public class SecurityProperties {
 
     public void setBrowser(BrowserProperties browser) {
         this.browser = browser;
+    }
+
+    public SocialProperties getSocial() {
+        return social;
+    }
+
+    public void setSocial(SocialProperties social) {
+        this.social = social;
     }
 }

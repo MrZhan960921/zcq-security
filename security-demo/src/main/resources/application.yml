@@ -26,5 +26,13 @@ earthchen:
         length: 6
         width: 100
         url: /user,/user/*
+    social:
+      qq:
+        app-id: 100550231
+        app-secret:
+        # 设置providerId
+        providerId: callback.do
+        # 将社交登录social前缀的/auth改为以下内容
 
+      filterProcessesUrl: /social-auth
 
