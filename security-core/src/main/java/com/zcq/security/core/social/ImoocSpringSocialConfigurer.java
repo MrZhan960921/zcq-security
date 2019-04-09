@@ -3,6 +3,9 @@ package com.zcq.security.core.social;
 import org.springframework.social.security.SocialAuthenticationFilter;
 import org.springframework.social.security.SpringSocialConfigurer;
 
+/**
+ * 自定义设置qq登录访问路径
+ */
 public class ImoocSpringSocialConfigurer extends SpringSocialConfigurer {
 
     private String filterProcessesUrl;
