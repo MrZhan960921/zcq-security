@@ -1,50 +1,44 @@
 package com.zcq.security.browser;
 
-import com.zcq.security.browser.authentication.ImoocAuthenctiationFailureHandler;
-import com.zcq.security.browser.authentication.ImoocAuthenticationSuccessHandler;
+
+import com.zcq.security.core.properties.SecurityConstants;
 import com.zcq.security.core.properties.SecurityProperties;
-import com.zcq.security.core.validate.code.ValidateCodeFilter;
+import com.zcq.security.core.validate.core.ValidateCodeSecurityConfig;
+import com.zcq.security.core.validate.core.authentication.AbstractChannelSecurityConfig;
+import com.zcq.security.core.validate.core.authentication.mobile.SmsCodeAuthenticationSecurityConfig;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 
 import javax.sql.DataSource;
 
-/**
- * @Author: zcq
- * @Date: 2019/4/9 11:32
- */
+
 @Configuration
-public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter {
+public class BrowserSecurityConfig extends AbstractChannelSecurityConfig {
+
     @Autowired
     private SecurityProperties securityProperties;
 
-    @Qualifier("dataSource")
     @Autowired
     private DataSource dataSource;
 
     @Autowired
     private UserDetailsService userDetailsService;
-    /**
-     * 验证错误处理器
-     */
-    @Autowired
-    private ImoocAuthenctiationFailureHandler imoocAuthenctiationFailureHandler;
 
-    /**
-     * 验证成功处理器
-     */
     @Autowired
-    private ImoocAuthenticationSuccessHandler imoocAuthenticationSuccessHandler;
+    private SmsCodeAuthenticationSecurityConfig smsCodeAuthenticationSecurityConfig;
+
+    @Autowired
+    private ValidateCodeSecurityConfig validateCodeSecurityConfig;
+
+
+
 
     /**
      * 设置加密解密算法
@@ -56,49 +50,114 @@ public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter {
         return new BCryptPasswordEncoder();
     }
 
+
     @Bean
-    public PersistentTokenRepository persistentTokenRepository(){
-        JdbcTokenRepositoryImpl tokenRepository=new JdbcTokenRepositoryImpl();
+    public PersistentTokenRepository persistentTokenRepository() {
+        JdbcTokenRepositoryImpl tokenRepository = new JdbcTokenRepositoryImpl();
         tokenRepository.setDataSource(dataSource);
         // 系统在启动时会自动生成表
-         tokenRepository.setCreateTableOnStartup(true);
+        // tokenRepository.setCreateTableOnStartup(true);
         return tokenRepository;
 
     }
+
+//    @Override
+//    public void configure(WebSecurity web) throws Exception {
+//
+//        //allow Swagger URL to be accessed without authentication
+//        web.ignoring().antMatchers("/v2/api-docs",//swagger api json
+//                "/swagger-resources/configuration/ui",//用来获取支持的动作
+//                "/swagger-resources",//用来获取api-docs的URI
+//                "/swagger-resources/configuration/security",//安全选项
+//                "/swagger-ui.html");
+//    }
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        ValidateCodeFilter validateCodeFilter = new ValidateCodeFilter();
-        validateCodeFilter.setAuthenticationFailureHandler(imoocAuthenctiationFailureHandler);
 
-        // 把配置传入验证码过滤器
-        validateCodeFilter.setSecurityProperties(securityProperties);
-        validateCodeFilter.afterPropertiesSet();
+//        ValidateCodeFilter validateCodeFilter = new ValidateCodeFilter();
+//        validateCodeFilter.setAuthenticationFailureHandler(imoocAuthenticationFailureHandler);
+//        // 把配置传入验证码过滤器
+//        validateCodeFilter.setSecurityProperties(securityProperties);
+//        validateCodeFilter.afterPropertiesSet();
+//
+//        SmsCodeFilter smsCodeFilter = new SmsCodeFilter();
+//        smsCodeFilter.setAuthenticationFailureHandler(imoocAuthenticationFailureHandler);
+//        smsCodeFilter.setSecurityProperties(securityProperties);
+//        smsCodeFilter.afterPropertiesSet();
+//
+//
+//        http
+//                .addFilterBefore(smsCodeFilter, UsernamePasswordAuthenticationFilter.class)
+//                .addFilterBefore(validateCodeFilter, UsernamePasswordAuthenticationFilter.class)
+//                // 指定表单登录
+//                .formLogin()
+//                // 配置登录页面
+//                .loginPage("/authentication/require")
+//                .loginProcessingUrl("/authentication/form")
+//                // 配置登录成功处理器
+//                .successHandler(imoocAuthenticationSuccessHandler)
+//                // 配置失败处理器
+//                .failureHandler(imoocAuthenticationFailureHandler)
+//
+//                .and()
+//                // 配置记住我功能
+//                .rememberMe()
+//                // 配置记住我token
+//                .tokenRepository(persistentTokenRepository())
+//                // 配置记住我的秒数
+//                .tokenValiditySeconds(securityProperties.getBrowser().getRememberMeSeconds())
+//                .userDetailsService(userDetailsService)
+//
+//                .and()
+//                .authorizeRequests()
+//                .antMatchers("/authentication/require",
+//                        securityProperties.getBrowser().getLoginPage(),
+//                        "/code/*",
+//                        "/v2/api-docs",//swagger api json
+//                        "/swagger-resources/configuration/ui",//用来获取支持的动作
+//                        "/swagger-resources",//用来获取api-docs的URI
+//                        "/swagger-resources/configuration/security",//安全选项
+//                        "/swagger-ui.html"
+//                ).permitAll()
+//                .anyRequest()
+//                .authenticated()
+//                .and()
+//                .csrf().disable()
+//
+//                // 将sms验证码配置项添加到浏览器配置中
+//                .apply(smsCodeAuthenticationSecurityConfig)
+//        ;
 
-        http.
-                addFilterBefore(validateCodeFilter, UsernamePasswordAuthenticationFilter.class)
-                // 指定表单登录
-                .formLogin()
-                .loginPage("/authentication/require")
-                .loginProcessingUrl("/authentication/form")
-                .successHandler(imoocAuthenticationSuccessHandler)
-                .failureHandler(imoocAuthenctiationFailureHandler)
+        applyPasswordAuthenticationConfig(http);
+
+        http.apply(validateCodeSecurityConfig)
                 .and()
-                // 配置记住我功能
+                .apply(smsCodeAuthenticationSecurityConfig)
+                .and()
                 .rememberMe()
-                // 配置记住我token
                 .tokenRepository(persistentTokenRepository())
-                // 配置记住我的秒数
                 .tokenValiditySeconds(securityProperties.getBrowser().getRememberMeSeconds())
                 .userDetailsService(userDetailsService)
                 .and()
+
+
                 .authorizeRequests()
-                .antMatchers("/authentication/require",
+                .antMatchers(
+                        SecurityConstants.DEFAULT_UNAUTHENTICATION_URL,
+                        SecurityConstants.DEFAULT_LOGIN_PROCESSING_URL_MOBILE,
                         securityProperties.getBrowser().getLoginPage(),
-                        "/code/image").permitAll()
+                        SecurityConstants.DEFAULT_VALIDATE_CODE_URL_PREFIX+"/*",
+                        "/v2/api-docs",//swagger api json
+                        "/swagger-resources/configuration/ui",//用来获取支持的动作
+                        "/swagger-resources",//用来获取api-docs的URI
+                        "/swagger-resources/configuration/security",//安全选项
+                        "/swagger-ui.html").permitAll()
                 .anyRequest()
                 .authenticated()
                 .and()
                 .csrf().disable();
+
 
     }
 }

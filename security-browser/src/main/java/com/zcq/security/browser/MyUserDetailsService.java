@@ -1,6 +1,5 @@
 package com.zcq.security.browser;
 
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,10 +11,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
-/**
- * @Author: zcq
- * @Date: 2019/4/9 11:25
- */
+
 @Component
 public class MyUserDetailsService implements UserDetailsService {
 
@@ -51,5 +47,6 @@ public class MyUserDetailsService implements UserDetailsService {
                 true,
                 true,
                 AuthorityUtils.commaSeparatedStringToAuthorityList("admin"));
+
     }
 }
