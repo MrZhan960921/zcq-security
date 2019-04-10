@@ -21,6 +21,19 @@ public class BrowserProperties {
      * 记住我时间秒数
      */
     private int rememberMeSeconds = 3600;
+    /**
+     * session配置
+     */
+    private SessionProperties session = new SessionProperties();
+
+    public SessionProperties getSession() {
+        return session;
+    }
+
+    public void setSession(SessionProperties session) {
+        this.session = session;
+    }
+
 
 
     public String getLoginPage() {

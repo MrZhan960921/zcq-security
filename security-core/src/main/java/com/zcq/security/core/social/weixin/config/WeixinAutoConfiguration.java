@@ -36,6 +36,7 @@ public class WeixinAutoConfiguration extends SocialAutoConfigurerAdapter {
                 weixinConfig.getAppSecret());
     }
 
+
     @Bean({"connect/weixinConnect", "connect/weixinConnected"})
     @ConditionalOnMissingBean(name = "weixinConnectedView")
     public View weixinConnectedView() {

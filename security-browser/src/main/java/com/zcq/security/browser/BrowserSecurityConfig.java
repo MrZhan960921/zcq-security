@@ -15,6 +15,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
+import org.springframework.security.web.session.InvalidSessionStrategy;
+import org.springframework.security.web.session.SessionInformationExpiredStrategy;
 import org.springframework.social.security.SpringSocialConfigurer;
 
 import javax.sql.DataSource;
@@ -41,7 +43,11 @@ public class BrowserSecurityConfig extends AbstractChannelSecurityConfig {
     @Autowired
     private SpringSocialConfigurer earthchenSocialConfig;
 
+    @Autowired
+    private InvalidSessionStrategy invalidSessionStrategy;
 
+    @Autowired
+    private SessionInformationExpiredStrategy sessionInformationExpiredStrategy;
     /**
      * 设置加密解密算法
      *
@@ -148,7 +154,22 @@ public class BrowserSecurityConfig extends AbstractChannelSecurityConfig {
                 .tokenValiditySeconds(securityProperties.getBrowser().getRememberMeSeconds())
                 .userDetailsService(userDetailsService)
                 .and()
-
+                // session 配置
+                .sessionManagement()
+                .invalidSessionStrategy(invalidSessionStrategy)
+                .maximumSessions(securityProperties.getBrowser().getSession().getMaximumSessions())
+                .maxSessionsPreventsLogin(securityProperties.getBrowser().getSession().isMaxSessionsPreventsLogin())
+                .expiredSessionStrategy(sessionInformationExpiredStrategy)
+                // 设置session失效之后跳转到的url
+//                .invalidSessionUrl("/session/invalid")
+//                // 设置最大session数量
+//                .maximumSessions(1)
+//                //当session数量达到最大时，阻止后来的用户登录
+//                //.maxSessionsPreventsLogin(true)
+//                // session超时处理策略
+//                .expiredSessionStrategy(new ImoocExpiredSessionStrategy())
+                .and()
+                .and()
 
                 .authorizeRequests()
                 .antMatchers(
@@ -158,6 +179,7 @@ public class BrowserSecurityConfig extends AbstractChannelSecurityConfig {
                         securityProperties.getBrowser().getRegisterPage(),
                         SecurityConstants.DEFAULT_VALIDATE_CODE_URL_PREFIX + "/*",
                         "/user/register",
+                        "/session/invalid",
                         "/v2/api-docs",//swagger api json
                         "/swagger-resources/configuration/ui",//用来获取支持的动作
                         "/swagger-resources",//用来获取api-docs的URI
