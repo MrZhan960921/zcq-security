@@ -11,6 +11,18 @@ public class SocialProperties {
      * @return
      */
     private QQProperties qq = new QQProperties();
+    /**
+     * 微信配置项
+     */
+    private WeixinProperties weixin = new WeixinProperties();
+
+    public WeixinProperties getWeixin() {
+        return weixin;
+    }
+
+    public void setWeixin(WeixinProperties weixin) {
+        this.weixin = weixin;
+    }
 
     /**
      * 拦截社交登录过滤url

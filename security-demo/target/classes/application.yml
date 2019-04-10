@@ -35,6 +35,8 @@ earthchen:
         # 设置providerId
         providerId: callback.do
         # 将社交登录social前缀的/auth改为以下内容
-
+      weixin:
+        app-id: wxd99431bbff8305a0
+        app-secret: 60f78681d063590a469f1b297feff3c4
       filterProcessesUrl: /social-auth
 
