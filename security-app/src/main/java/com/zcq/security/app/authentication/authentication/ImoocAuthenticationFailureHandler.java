@@ -1,9 +1,7 @@
-package com.zcq.security.app.authentication;
-
+package com.zcq.security.app.authentication.authentication;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import com.zcq.security.core.properties.LoginResponseType;
 import com.zcq.security.core.properties.SecurityProperties;
 import com.zcq.security.core.support.SimpleResponse;

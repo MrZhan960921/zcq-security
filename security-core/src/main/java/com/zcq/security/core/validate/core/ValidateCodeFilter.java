@@ -24,7 +24,7 @@ import java.util.Set;
 /**
  * 图形验证码和短信验证码过滤器
  */
-@Component("validateCodeFilter")
+//@Component("validateCodeFilter")
 public class ValidateCodeFilter extends OncePerRequestFilter implements InitializingBean {
 
     /**

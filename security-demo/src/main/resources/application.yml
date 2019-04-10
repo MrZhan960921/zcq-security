@@ -22,12 +22,12 @@ earthchen:
       # 配置自定义注册页
       registerPage: /demo-signUp.html
 
-    validateCode:
-      imageCode:
-        #         设置图形验证码的长度为6，不配置则为默认验证码属性
-        length: 6
-        width: 100
-        url: /user,/user/*
+#    validateCode:
+#      imageCode:
+#        #         设置图形验证码的长度为6，不配置则为默认验证码属性
+#        length: 6
+#        width: 100
+#        url: /user,/user/*
     social:
       qq:
         app-id: 100550231
