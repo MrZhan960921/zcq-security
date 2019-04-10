@@ -13,6 +13,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 import org.springframework.security.web.session.InvalidSessionStrategy;
@@ -48,6 +49,9 @@ public class BrowserSecurityConfig extends AbstractChannelSecurityConfig {
 
     @Autowired
     private SessionInformationExpiredStrategy sessionInformationExpiredStrategy;
+
+    @Autowired
+    private LogoutSuccessHandler logoutSuccessHandler;
     /**
      * 设置加密解密算法
      *
@@ -161,22 +165,28 @@ public class BrowserSecurityConfig extends AbstractChannelSecurityConfig {
                 .maxSessionsPreventsLogin(securityProperties.getBrowser().getSession().isMaxSessionsPreventsLogin())
                 .expiredSessionStrategy(sessionInformationExpiredStrategy)
                 // 设置session失效之后跳转到的url
-//                .invalidSessionUrl("/session/invalid")
-//                // 设置最大session数量
-//                .maximumSessions(1)
-//                //当session数量达到最大时，阻止后来的用户登录
-//                //.maxSessionsPreventsLogin(true)
-//                // session超时处理策略
-//                .expiredSessionStrategy(new ImoocExpiredSessionStrategy())
+                //                .invalidSessionUrl("/session/invalid")
+                //                // 设置最大session数量
+                //                .maximumSessions(1)
+                //                //当session数量达到最大时，阻止后来的用户登录
+                //                //.maxSessionsPreventsLogin(true)
+                //                // session超时处理策略
+                //                .expiredSessionStrategy(new ImoocExpiredSessionStrategy())
                 .and()
                 .and()
-
+                .logout()
+                .logoutUrl("/signOut")
+                //.logoutSuccessUrl("/imooc-logout.html")
+                .logoutSuccessHandler(logoutSuccessHandler)//// 退出成功处理逻辑
+                .deleteCookies("JSESSIONID")//清除cookie
+                .and()
                 .authorizeRequests()
                 .antMatchers(
                         SecurityConstants.DEFAULT_UNAUTHENTICATION_URL,
                         SecurityConstants.DEFAULT_LOGIN_PROCESSING_URL_MOBILE,
                         securityProperties.getBrowser().getLoginPage(),
                         securityProperties.getBrowser().getRegisterPage(),
+                        securityProperties.getBrowser().getSignOutUrl(),
                         SecurityConstants.DEFAULT_VALIDATE_CODE_URL_PREFIX + "/*",
                         "/user/register",
                         "/session/invalid",
