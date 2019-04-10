@@ -52,15 +52,7 @@ public class BrowserSecurityConfig extends AbstractChannelSecurityConfig {
 
     @Autowired
     private LogoutSuccessHandler logoutSuccessHandler;
-    /**
-     * 设置加密解密算法
-     *
-     * @return
-     */
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
+
 
 
     @Bean

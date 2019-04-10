@@ -12,9 +12,14 @@
     <artifactId>security-demo</artifactId>
 
     <dependencies>
+        <!--<dependency>-->
+            <!--<groupId>com.zcq</groupId>-->
+            <!--<artifactId>security-browser</artifactId>-->
+            <!--<version>${zcq.security.version}</version>-->
+        <!--</dependency>-->
         <dependency>
             <groupId>com.zcq</groupId>
-            <artifactId>security-browser</artifactId>
+            <artifactId>security-app</artifactId>
             <version>${zcq.security.version}</version>
         </dependency>
 

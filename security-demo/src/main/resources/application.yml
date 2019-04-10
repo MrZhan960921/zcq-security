@@ -44,3 +44,10 @@ server:
   session:
     #  设置session超时时间(最小是1分钟 )
     timeout: 600
+
+security:
+  oauth2:
+    client:
+      client-id: earthchen
+      client-secret: earthchensecret
+      registered-redirect-uri: "http://example.com"

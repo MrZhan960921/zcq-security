@@ -1,4 +1,4 @@
-package com.zcq.security.browser.support;
+package com.zcq.security.core.support;
 
 public class SimpleResponse {
 

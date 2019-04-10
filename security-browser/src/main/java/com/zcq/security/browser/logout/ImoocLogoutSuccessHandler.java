@@ -2,7 +2,7 @@ package com.zcq.security.browser.logout;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.zcq.security.browser.support.SimpleResponse;
+import com.zcq.security.core.support.SimpleResponse;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
