@@ -1,8 +1,6 @@
 package com.zcq.security.app.authentication.authentication;
 
-
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.zcq.security.core.properties.SecurityProperties;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -31,8 +29,6 @@ public class ImoocAuthenticationSuccessHandler extends SavedRequestAwareAuthenti
     @Autowired
     private ObjectMapper objectMapper;
 
-    @Autowired
-    private SecurityProperties securityProperties;
 
     @Autowired
     private ClientDetailsService clientDetailsService;
@@ -92,6 +88,7 @@ public class ImoocAuthenticationSuccessHandler extends SavedRequestAwareAuthenti
         response.getWriter().write(objectMapper.writeValueAsString(token));
 
     }
+
     /**
      * 解析请求头拿到clientid  client secret的数组
      *
@@ -119,4 +116,5 @@ public class ImoocAuthenticationSuccessHandler extends SavedRequestAwareAuthenti
         }
         return new String[]{token.substring(0, delim), token.substring(delim + 1)};
     }
+
 }

@@ -1,6 +1,7 @@
 package com.zcq.security.app.authentication.server;
 
 
+import com.zcq.security.app.authentication.authentication.openid.OpenIdAuthenticationSecurityConfig;
 import com.zcq.security.core.properties.SecurityConstants;
 import com.zcq.security.core.properties.SecurityProperties;
 import com.zcq.security.core.validate.core.ValidateCodeSecurityConfig;
@@ -36,6 +37,9 @@ public class ImoocResourceServerConfig extends ResourceServerConfigurerAdapter {
     @Autowired
     private ValidateCodeSecurityConfig validateCodeSecurityConfig;
 
+    @Autowired
+    private OpenIdAuthenticationSecurityConfig openIdAuthenticationSecurityConfig;
+
     @Override
     public void configure(HttpSecurity http) throws Exception {
         http.formLogin()
@@ -45,14 +49,17 @@ public class ImoocResourceServerConfig extends ResourceServerConfigurerAdapter {
                 .failureHandler(imoocAuthenticationFailureHandler);
 
         http
-                 //应用验证码安全配置
+                //应用验证码安全配置
                 .apply(validateCodeSecurityConfig)
                 .and()
-                 //应用短信验证码认证安全配置
+                //应用短信验证码认证安全配置
                 .apply(smsCodeAuthenticationSecurityConfig)
                 .and()
                 // 引用社交配置
                 .apply(earthchenSocialConfig)
+                .and()
+
+                .apply(openIdAuthenticationSecurityConfig)
                 .and()
 
                 .authorizeRequests()
@@ -62,6 +69,7 @@ public class ImoocResourceServerConfig extends ResourceServerConfigurerAdapter {
                         securityProperties.getBrowser().getLoginPage(),
                         securityProperties.getBrowser().getRegisterPage(),
                         SecurityConstants.DEFAULT_VALIDATE_CODE_URL_PREFIX + "/*",
+                        "/social/signUp",
                         "/user/register",
                         "/session/invalid",
                         "/v2/api-docs",//swagger api json

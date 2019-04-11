@@ -3,6 +3,7 @@ package com.zcq.web.controller;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import com.zcq.dto.User;
+import com.zcq.security.app.authentication.social.AppSingUpUtils;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,12 +28,16 @@ public class UserController {
     @Autowired
     private ProviderSignInUtils providerSignInUtils;
 
+
+    @Autowired
+    private AppSingUpUtils appSingUpUtils;
+
     @PostMapping("/register")
     public void register(User user, HttpServletRequest request) {
-
         //不管是注册用户还是绑定用户，都会拿到一个用户唯一标识。
         String userId = user.getUsername();
-        providerSignInUtils.doPostSignUp(userId, new ServletWebRequest(request));
+        //providerSignInUtils.doPostSignUp(userId, new ServletWebRequest(request));
+        appSingUpUtils.doPostSignUp(new ServletWebRequest(request),userId);
     }
 
     /**
